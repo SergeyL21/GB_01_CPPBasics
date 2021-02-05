@@ -6,7 +6,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 11)
 
 set(SOURCE_FILES
-	main.cpp
+  main.cpp
   data.cpp
 )
 
