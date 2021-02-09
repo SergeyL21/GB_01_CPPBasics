@@ -5,9 +5,9 @@ project(GB_CppBasics)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCE_FILES
-  main.cpp
-  data.cpp
-)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+add_subdirectory(lib)
+add_subdirectory(app)
