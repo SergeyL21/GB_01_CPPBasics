@@ -7,6 +7,8 @@
  * Author: Sergey Lola
  */
 
+#pragma once
+
 #ifdef _WIN32
 # if defined(LIB_EXPORTS)
 #   define DLL_LIB_EXPORT __declspec(dllexport)

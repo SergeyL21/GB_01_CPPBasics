@@ -7,6 +7,8 @@
  * Author: Sergey Lola
  */
 
+#pragma once
+
 #include "lib_global.h"
 
 #include <cstddef>

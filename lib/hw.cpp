@@ -49,7 +49,7 @@ void task3(int min, int max, string &res)
 {
   res.assign(string("Your numbers: "));
   // "грубый" подсчет необходимого размера памяти под строку
-  res.reserve(size_t(max - min) * 2u);
+  res.reserve(size_t(abs(max - min)) * 2u);
   // если число четное, то отстчет начинаем с ближайшего нечетного
   if (!(min % 2))
   {

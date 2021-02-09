@@ -7,24 +7,16 @@
  * Author: Sergey Lola
  */
 
-#include <iostream>
-#include <vector>
+#include "main_window.h"
 
-#include "hw.h"
-
-// макрос для удаления предупреждения об неиспользуемой переменной
-#undef unused
-#define unused(x) (void)(x);
-
-using namespace std;
+#include <QApplication>
 
 // ---------------------------------------------------------------------------
-int main(int argc, const char ** argv)
+int main(int argc, char *argv[])
 {
-  unused(argc)
-  unused(argv)
-
-  bool t1 = lib::task1(1, 15);
-  t1 = false;
-  std::cout << t1 << std::endl;
+  QApplication app(argc, argv);
+  MainWindow win;
+  win.show();
+  return app.exec();
 }
+
