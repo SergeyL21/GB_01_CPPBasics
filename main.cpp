@@ -7,114 +7,116 @@
  * Author: Sergey Lola
  */
 
-#include "helpers.h"
+#include <iostream>
+#include <fstream>
+
+#include "mylib.h"
 
 using namespace std;
 
 // ---------------------------------------------------------------------------
+// макросы для обозначения размера массива в 3-м задании
+#define TASK3_ARRAY_SIZE 10
+
+// ---------------------------------------------------------------------------
 int main(int argc, const char ** argv)
 {
-  unused(argc)
-  unused(argv)
+  UNUSED(argc)
+  UNUSED(argv)
   // -------------------------------------------------------------------------------------
-  // ЗАДАНИЕ 1: Выделить в памяти динамический одномерный массив типа int. Размер массива
-  // запросить у пользователя. Инициализировать его числами степенями двойки: 1, 2, 4, 8,
-  // 16, 32, 64, 128 … Вывести массив на экран. Не забыть освободить память. =)
-  // Разбить программу на функции.
+  // ЗАДАНИЕ 1: Создайте проект из 2-х cpp файлов и заголовочного (main.cpp, mylib.cpp,
+  // mylib.h). Во втором модуле mylib объявить 3 функции: для инициализации массива (типа
+  // float), печати его на экран и подсчета количества отрицательных и положительных
+  // элементов. Вызывайте эти 3-и функции из main для работы с массивом.
+  // +
+  // ЗАДАНИЕ 5: Сделайте задание 1 добавив свой неймспейс во втором модуле (первое задание
+  // тогда можно не делать).
   {
-    size_t arraySize;
-    cout << "--- TASK 1 ---" << endl;
-    cout << "Please enter an array size: " << flush;
-    cin >> arraySize;
-
-    auto pArray = helpers::allocArray1D(arraySize);
-    int number {1u};
-    for (std::size_t n {0u}; n < arraySize; ++n, (number <<= 1))
-    {
-      pArray[n] = number;
-    }
-    helpers::printArray(pArray.get(), arraySize);
-    // объект pArray автоматически очиститься при выходе из области видимости, delete тут
-    // не нужен! Магия "умных указателей" )
+    cout << "--- TASK 1+5 ---" << endl;
+    const size_t LOCAL_ARRAY_SIZE{10u};
+    const auto RANGE {make_pair(-100.f, 100.f)};
+    array<float, LOCAL_ARRAY_SIZE> arr;
+    mylib::fillArray(OUT arr, RANGE);
+    cout << "Array: " << mylib::array2String(arr, 2) << endl;
+    int positives, negatives;
+    mylib::countArrayNums(arr, OUT positives, OUT negatives);
+    cout << "Positive numbers count: " << positives << endl;
+    cout << "Negative numbers count: " << negatives << endl;
   }
   // -------------------------------------------------------------------------------------
-  // ЗАДАНИЕ 2: Динамически выделить матрицу 4х4 типа int. Инициализировать ее
-  // псевдослучайными числами через функцию rand. Вывести на экран. Разбейте вашу программу
-  // на функции которые вызываются из main.
+  // ЗАДАНИЕ 2: Описать макрокоманду (через директиву define), проверяющую, входит ли
+  // переданное ей число (введенное с клавиатуры) в диапазон от нуля (включительно) до
+  // переданного ей второго аргумента (исключительно) и возвращает true или false, вывести
+  // на экран "true" или "false".
   {
     cout << endl << "--- TASK 2 ---" << endl;
-    cout << "Matrix with random numbers:" << endl;
-    const size_t COLUMNS {4u}, ROWS {4u};
-    // устанавливаем границы генерируемых чисел (для лучшего восприятия при выводе)
-    const auto BOUNDS {make_pair(10, 99)};
-    auto pArray = helpers::allocArray2D(COLUMNS, ROWS);
-    for (std::size_t c {0u}; c < COLUMNS; ++c) {
-      auto column = pArray[c].get();
-      cout << c + 1u << " | ";
-      helpers::fillMatrixColumn(column, ROWS, BOUNDS);
-      helpers::printArray(column, ROWS, true);
-    }
-    // объект pArray автоматически очиститься при выходе из области видимости, delete тут
-    // не нужен! Магия "умных указателей" )
-  }
-  // -------------------------------------------------------------------------------------
-  // ЗАДАНИЕ 3: Написать программу c 2-я функциями, которая создаст два текстовых файла
-  // (*.txt), примерно по 50-100 символов в каждом (особого значения не имеет с каким
-  // именно содержимым). Имена файлов запросить у польлзователя.
-  // +
-  // ЗАДАНИЕ 4: Написать функцию, «склеивающую» файлы из задания 3 в третий текстовый файл
-  // (имя файлов спросить у пользователя).
-  {
-    string filepathA, filepathB, filepathC;
-    cout << endl << "--- TASK 3+4 ---" << endl;
-    cout << "Please enter a path for first file: ";
-    cin >> filepathA;
-    const auto SIZE_BOUNDS {make_pair(50, 100)};
-    if (helpers::generateFile(filepathA, SIZE_BOUNDS)) {
-      cout << "'" << filepathA << "'" << " created successfully." << endl;
-    }
-    cout << "Please enter a path for second file: ";
-    cin >> filepathB;
-    if (helpers::generateFile(filepathB, SIZE_BOUNDS)) {
-      cout << "'" << filepathB << "'" << " created successfully." << endl;
-    }
-    cout << "Please enter a path for merge files " <<
-            "'" << filepathA << "' and " <<
-            "'" << filepathB << "': ";
-    cin >> filepathC;
-    if (helpers::mergeFiles(filepathA, filepathB, filepathC)) {
-      cout << "'" << filepathC << "'" << " created and merged successfully." << endl;
-    }
-  }
-  // -------------------------------------------------------------------------------------
-  // ЗАДАНИЕ 5: Написать программу, которая проверяет присутствует ли указанное
-  // пользователем при запуске программы слово в указанном пользователем файле
-  // (для простоты работаем только с латиницей).
-  {
-    string filepath;
-    cout << endl << "--- TASK 5 ---" << endl;
-    cout << "Please enter a file path: ";
-    cin >> filepath;
-    ifstream fin(filepath, ios_base::binary);
-    if (fin.is_open())
+    auto bool2String = [](bool value)
     {
-      string word;
-      cout << "Please enter a search word: ";
-      cin >> word;
-      size_t lineNum;
-      if (helpers::findWord(OUT fin, OUT lineNum, word))
+      return value ? std::string{"true"} : std::string{"false"};
+    };
+    cout << "Macro function IN_RANGE(3, 0, 5) = " << bool2String(IN_RANGE(3, 0, 5)) << endl;
+    cout << "Macro function IN_RANGE(5, 0, 5) = " << bool2String(IN_RANGE(5, 0, 5)) << endl;
+    cout << "Macro function IN_RANGE(2 + 1, 0, 4) = " << bool2String(IN_RANGE(2 + 1, 0, 4)) << endl;
+    cout << "Macro function IN_RANGE(6, 0, 2 * 3) = " << bool2String(IN_RANGE(6, 0, 2 * 3)) << endl;
+    cout << "Macro function IN_RANGE(0, 0, 1) = " << bool2String(IN_RANGE(0, 0, 1)) << endl;
+    cout << "Macro function IN_RANGE(0, 0, -1) = " << bool2String(IN_RANGE(0, 0, -1)) << endl;
+  }
+  // -------------------------------------------------------------------------------------
+  // ЗАДАНИЕ 3: Задайте массив типа int. Пусть его размер задается через директиву
+  // препроцессора #define. Инициализируйте его через ввод с клавиатуры. Напишите для него
+  // свою функцию сортировки (например Пузырьком). Реализуйте перестановку элементов как
+  // макрокоманду SwapINT(a, b). Вызывайте ее из цикла сортировки.
+  {
+    cout << endl << "--- TASK 3 ---" << endl;
+    array<int, TASK3_ARRAY_SIZE> arr;
+    std::size_t index{1u};
+    // заполняем массив с клавиатуры
+    for (auto it = arr.begin(); it != arr.end(); ++it, ++index)
+    {
+      FOREVER_BEGIN
       {
-        cout << "Word '" << word << "'" << " found at line " << lineNum << endl;
+        cout << " value " << index << ": ";
+        if (cin >> *it)
+        {
+          break;
+        }
+        else
+        {
+          cout << "Invalid input, try again!" << endl;
+          cin.clear();
+          cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
       }
-      else
-      {
-        cout << "Word '" << word << "' not found" << endl;
-      }
-      fin.close();
+      FOREVER_END
     }
-    else {
-      cout << "Error: " << strerror(errno) << endl;
+    mylib::shakerSort(arr.data(), int{arr.size()});
+    cout << "Sorted array: " << mylib::array2String(arr) << endl;
+  }
+  // -------------------------------------------------------------------------------------
+  // ЗАДАНИЕ 4: Объявить структуру Сотрудник с различными полями. Сделайте для нее
+  // побайтовое выравнивание с помощью директивы pragma pack. Выделите динамически
+  // переменную этого типа. Инициализируйте ее. Выведите ее на экран и ее размер с помощью
+  // sizeof. Сохраните эту структуру в текстовый файл.
+  {
+    cout << endl << "--- TASK 4 ---" << endl;
+    auto employee = make_unique<mylib::TEmployee>();
+    employee->name = "Anonymous";
+    employee->salary = 3000u;
+    employee->tasks = 100500u;
+    employee->level = enums::Level::Red_Eyed;
+    employee->moral = enums::Moral::Monday;
+    employee->inventory = {enums::Item::MagicCard, enums::Item::SingularityBook};
+
+    const auto text = employee->toString(true);
+    cout << text << endl;
+    ofstream fout{"employee.txt"};
+    if (fout.is_open())
+    {
+      fout << text;
+      fout.close();
+      cout << "The file was created successfully." << endl;
     }
   }
+
   return 0;
 }
